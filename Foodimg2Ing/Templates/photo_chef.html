@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecipeAI - PhotoChef</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #0ea371;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #0f172a;
+            --light: #F7F7F7;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --card-shadow: 0 10px 20px rgba(0,0,0,.08);
+            --hover-shadow: 0 15px 30px rgba(0,0,0,.12);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 320px;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .header-logo:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .header-logo i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .page-title:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 30px;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .upgrade-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-selector:hover {
+            background: #f8f9fa;
+            border-color: #ced4da;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .notification-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .notification-btn:hover {
+            background: #f8f9fa;
+            border-color: #ced4da;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            color: var(--dark);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: var(--secondary);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .account-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: var(--secondary);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .dropdown-arrow {
+            color: var(--gray);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-arrow:hover {
+            color: var(--dark);
+        }
+
+        .account-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--light-gray);
+            padding: 20px 0;
+            margin-top: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .account-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 0 24px 16px;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 12px;
+        }
+
+        .dropdown-user-info {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .dropdown-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 0 8px;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(76, 175, 80, 0.08);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+            text-align: center;
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .dropdown-item:hover i {
+            color: var(--primary);
+        }
+
+        .dropdown-item.logout {
+            color: var(--primary);
+            border-top: 1px solid var(--light-gray);
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+
+        .dropdown-item.logout:hover {
+            background: rgba(76, 175, 80, 0.08);
+            color: var(--primary);
+        }
+
+        .dropdown-item.logout i {
+            color: var(--primary);
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            padding-top: 80px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e8e8e8;
+            padding: 30px 20px;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 5px;
+        }
+
+        .logo i {
+            color: #10b981;
+            margin-right: 10px;
+        }
+
+        .logo-subtitle {
+            color: #8A8A8A;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .tools-section {
+            margin-bottom: 30px;
+        }
+
+        .tools-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #292F36;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            border-left: 3px solid #10b981;
+        }
+
+        .tools-title i {
+            margin-right: 10px;
+            color: #10b981;
+        }
+
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            background: white;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            color: #292F36;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-btn:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+            color: #292F36;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            text-decoration: none;
+        }
+
+        .tool-btn.active {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .tool-btn i {
+            font-size: 20px;
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+            color: #10b981;
+        }
+
+        .tool-btn .tool-name {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .tool-btn .tool-description {
+            font-size: 12px;
+            color: #8A8A8A;
+            margin-top: 2px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 320px;
+            padding: 40px;
+            margin-top: 80px;
+        }
+
+        /* Photo Chef Specific Styles */
+        .photochef-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        /* Upload Area Styles */
+        .upload-area {
+            border: 2px dashed var(--light-gray);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fafafa;
+            margin-bottom: 30px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* Image Preview */
+        .uploaded-image-display {
+    text-align: center;
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#up-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: none;
+    margin: 0 auto; /* This ensures horizontal centering */
+}
+
+        /* Button Styles */
+        .upload_button {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+        }
+
+        .upload_button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .upload_button input {
+            display: none;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Recipe Cards */
+        .recipe-section {
+            margin-top: 40px;
+        }
+
+        .recipe-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .recipe_name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ing_dir_display_area {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        /* Loading States */
+        .btn-generate.loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+    .uploaded-image-display {
+        padding: 0 15px;
+    }
+    
+    #up-image {
+        max-width: 90%;
+    }
+}
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+                padding: 30px;
+            }
+
+            .header {
+                left: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 20px;
+                top: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                margin-top: 0;
+            }
+
+            .header {
+                left: 0;
+                padding: 0 20px;
+            }
+
+            .header-left {
+                gap: 15px;
+            }
+
+            .header-logo {
+                font-size: 20px;
+                padding: 6px 12px;
+            }
+
+            .header-logo i {
+                font-size: 24px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+            
+            .header-right {
+                gap: 10px;
+            }
+
+            .upgrade-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .language-selector {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-logo">
+                <i class="fas fa-utensils"></i>
+                <span>RecipeAI</span>
+            </div>
+            <h1 class="page-title">PhotoChef</h1>
+        </div>
+        
+        <div class="header-right">
+            <a href="#" class="upgrade-btn">
+                <i class="fas fa-star"></i>
+                Upgrade to Pro
+            </a>
+            
+            <div class="language-selector">
+                <i class="fas fa-globe"></i>
+                GB EN
+            </div>
+            
+            <div class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <div class="notification-badge"></div>
+            </div>
+            
+            <div class="account-section">
+                <div class="user-avatar" onclick="toggleDropdown()">
+                    <i class="fas fa-user"></i>
+                </div>
+                <i class="fas fa-chevron-down dropdown-arrow" onclick="toggleDropdown()"></i>
+                
+                <div class="account-dropdown" id="accountDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-user-info">
+                            Signed in as chef@recipeai.com
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-kitchen-set"></i>
+                                Kitchen
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-gear"></i>
+                                Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-wand-magic-sparkles"></i>
+                                Theme
+                                <i class="fas fa-chevron-right" style="margin-left:auto"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('logout') }}" class="dropdown-item logout">
+                                <i class="fas fa-right-from-bracket"></i>
+                                Sign out
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>RecipeAI
+                </div>
+                <div class="logo-subtitle">Your intelligent recipe companion</div>
+            </div>
+
+            <div class="tools-section">
+                <div class="tools-title">
+                    <i class="fas fa-tools"></i>Chef Tools
+                </div>
+                
+                <a href="{{ url_for('pantry_chef') }}" class="tool-btn">
+                    <i class="fas fa-archive"></i>
+                    <div>
+                        <div class="tool-name">Pantry Chef</div>
+                        <div class="tool-description">Create recipes from ingredients</div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('master_chef') }}" class="tool-btn">
+                    <i class="fas fa-crown"></i>
+                    <div>
+                        <div class="tool-name">Master Chef</div>
+                        <div class="tool-description">Advanced recipe generation</div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('macros_chef') }}" class="tool-btn">
+                    <i class="fas fa-dumbbell"></i>
+                    <div>
+                        <div class="tool-name">Macros Chef</div>
+                        <div class="tool-description">Nutrition-focused recipes</div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('meal_plan_chef') }}" class="tool-btn">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <div class="tool-name">Meal Plan Chef</div>
+                        <div class="tool-description">Weekly meal planning</div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('photo_chef') }}" class="tool-btn active">
+                    <i class="fas fa-camera"></i>
+                    <div>
+                        <div class="tool-name">Photo Chef</div>
+                        <div class="tool-description">Recipes from food images</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="photochef-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-camera"></i> Photo Chef</h2>
+                    <p>A food image to recipe converter for Indian Food</p>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Image Upload Area - Initially visible -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4>Drag & Drop your food image here</h4>
+                        <p class="text-muted">or click to browse files</p>
+                        <p class="small text-muted mt-2">Supported formats: JPG, PNG, JPEG (Max 5MB)</p>
+                    </div>
+
+                    <!-- Image Preview - Initially hidden -->
+                    <div class="uploaded-image-display" id="imagePreview" style="display: none;">
+                        
+                        <img id="up-image" src="{{ uploaded_image if uploaded_image else '' }}">
+                        <div style="margin-top: 20px;">
+                            <button class="upload_button" onclick="changeImage()">
+                                <i class="fas fa-sync-alt"></i> Change Image
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form method="post" enctype="multipart/form-data" id="photoForm" action="{{ url_for('photo_chef') }}">
+                        <div style="display: flex; align-items: center; gap: 1em; justify-content: center; flex-wrap: wrap;">
+                            <label class="upload_button" id="uploadButton" style="display: none;">
+                                <i class="fas fa-upload"></i> Upload Image
+                                <input type="file" name="image" accept="image/*" id="id_image"
+                                    onchange="handleImageUpload(this.files[0])">
+                            </label>
+                            <label class="upload_button" id="cameraButton" style="display: none;">
+                                <i class="fas fa-camera"></i> Take a Picture
+                                <input type="file" name="image" accept="image/*" capture="environment" id="cap_image"
+                                    onchange="handleImageUpload(this.files[0])">
+                            </label>
+                        </div>
+                        
+                        <button class="btn-generate" type="submit" id="generateBtn" style="display: none;">
+                            <i class="fas fa-magic"></i> Generate Recipe
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Display Area -->
+            {% if recipe_list_to_return %}
+            <div class="recipe-section" id="resultsArea">
+                <div class="photochef-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-utensils"></i> Recipe Matches</h3>
+                        <p>Here are some possible matches (might not be 100% accurate)</p>
+                    </div>
+                    <div class="card-body">
+                        {% for x in recipe_list_to_return %}
+                        <div class="recipe-card">
+                            <h2 class="recipe_name">{{ x[0] }}</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-list"></i> Ingredients</h4>
+                                    <p class="ing_dir_display_area">{{ x[2] }}</p>
+                                    <p><strong>Cooking Time:</strong> {{ x[3] }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-route"></i> Directions</h4>
+                                    <p class="ing_dir_display_area">{{ x[4] }}</p>
+                                    <p class="ing_dir_display_area">{{ x[5] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <center>
+                            <button class="upload_button" onclick="display_more()" style="margin-top: 2em;">
+                                Can't find what you're looking for? Click here to see more
+                            </button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Extra Results (Hidden by default) -->
+            {% if similar_recipe_list %}
+            <div class="recipe-section" id="extra_results" style="display: none;">
+                <div class="photochef-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-utensils"></i> Additional Recipe Matches</h3>
+                    </div>
+                    <div class="card-body">
+                        {% for x in similar_recipe_list %}
+                        <div class="recipe-card">
+                            <h2 class="recipe_name">{{ x[0] }}</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-list"></i> Ingredients</h4>
+                                    <p class="ing_dir_display_area">{{ x[2] }}</p>
+                                    <p><strong>Cooking Time:</strong> {{ x[3] }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-route"></i> Directions</h4>
+                                    <p class="ing_dir_display_area">{{ x[4] }}</p>
+                                    <p class="ing_dir_display_area">{{ x[5] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Account dropdown functionality
+        function toggleDropdown() {
+            const dropdown = document.getElementById('accountDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const accountSection = document.querySelector('.account-section');
+            const dropdown = document.getElementById('accountDropdown');
+            
+            if (!accountSection.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // File upload functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadButton = document.getElementById('uploadButton');
+        const cameraButton = document.getElementById('cameraButton');
+        const generateBtn = document.getElementById('generateBtn');
+        const previewImage = document.getElementById('up-image');
+
+        uploadArea.addEventListener('click', () => {
+            document.getElementById('id_image').click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageUpload(files[0]);
+            }
+        });
+
+        function handleImageUpload(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Hide upload area and show image preview
+                    uploadArea.style.display = 'none';
+                    imagePreview.style.display = 'block';
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    
+                    // Show the generate button
+                    generateBtn.style.display = 'flex';
+                    
+                    // Hide upload buttons since we have the change image button
+                    uploadButton.style.display = 'none';
+                    cameraButton.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function changeImage() {
+            // Reset to initial state
+            uploadArea.style.display = 'block';
+            imagePreview.style.display = 'none';
+            generateBtn.style.display = 'none';
+            uploadButton.style.display = 'inline-block';
+            cameraButton.style.display = 'inline-block';
+            
+            // Clear the file inputs
+            document.getElementById('id_image').value = '';
+            document.getElementById('cap_image').value = '';
+        }
+
+        // Form submission loading state
+        document.getElementById('photoForm').addEventListener('submit', function() {
+            const btn = document.getElementById('generateBtn');
+            const originalText = btn.innerHTML;
+            
+            // Add loading state
+            btn.classList.add('loading');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading-spinner"></div>Analyzing Image & Generating Recipe...';
+            
+            // Store original text for potential reset
+            btn.setAttribute('data-original-text', originalText);
+        });
+
+        // Add hover effects to tool buttons
+        document.querySelectorAll('.tool-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Original RecipeLens functions
+        function display_more() {
+            var x = document.getElementById('extra_results');
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        function load_demo_image(image_link) {
+            var frm = document.getElementById('up-image');
+            frm.src = image_link;
+            frm.style.display = 'block';
+        }
+
+        // Initialize page - show upload buttons initially
+        window.onload = function() {
+            uploadButton.style.display = 'inline-block';
+            cameraButton.style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Plan - RecipeAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .onboarding-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            color: #48bb78;
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 96%;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+
+        .step.active {
+            color: #48bb78;
+            font-weight: 600;
+        }
+
+        .step.completed {
+            color: #48bb78;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-description {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .plan-options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .plan-option {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .plan-option label {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-option input[type="radio"]:checked + label {
+            border-color: #48bb78;
+            background: #f0fff4;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.15);
+        }
+
+        .plan-icon {
+            width: 50px;
+            height: 50px;
+            background: #48bb78;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .plan-option input[type="radio"]:checked + label .plan-icon {
+            background: #38a169;
+        }
+
+        .plan-details {
+            flex: 1;
+        }
+
+        .plan-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .plan-description {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .plan-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #48bb78;
+            margin-top: 5px;
+        }
+
+        .btn-continue {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .btn-continue.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-continue:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.show {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .onboarding-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .plan-option label {
+                padding: 15px;
+            }
+
+            .plan-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .plan-name {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>RecipeAI
+            </div>
+            <div class="subtitle">Your personalized recipe companion</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="steps">
+                <div class="step completed">1</div>
+                <div class="step completed">2</div>
+                <div class="step completed">3</div>
+                <div class="step completed">4</div>
+                <div class="step completed">5</div>
+                <div class="step completed">6</div>
+                <div class="step completed">7</div>
+                <div class="step completed">8</div>
+                <div class="step completed">9</div>
+                <div class="step completed">10</div>
+                <div class="step active">11</div>
+                <div class="step">12</div>
+                <div class="step">13</div>
+            </div>
+        </div>
+
+        <form method="POST" id="planForm">
+            <h2 class="form-title">Choose Your Plan</h2>
+            <p class="form-description">Select the plan that best fits your cooking goals and preferences</p>
+
+            <div class="plan-options">
+                <div class="plan-option">
+                    <input type="radio" id="standard" name="plan" value="Standard" required>
+                    <label for="standard">
+                        <div class="plan-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="plan-details">
+                            <div class="plan-name">Standard Plan</div>
+                            <div class="plan-description">Perfect for beginners. Get basic recipe suggestions and meal planning tools.</div>
+                            <div class="plan-price">Free</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="plan-option">
+                    <input type="radio" id="premium" name="plan" value="Premium" required>
+                    <label for="premium">
+                        <div class="plan-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="plan-details">
+                            <div class="plan-name">Premium Plan</div>
+                            <div class="plan-description">Advanced features including personalized macros, detailed nutrition info, and priority support.</div>
+                            <div class="plan-price">$9.99/month</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="plan-option">
+                    <input type="radio" id="custom" name="plan" value="Custom" required>
+                    <label for="custom">
+                        <div class="plan-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <div class="plan-details">
+                            <div class="plan-name">Custom Plan</div>
+                            <div class="plan-description">Tailored to your specific dietary needs with AI-powered recommendations and expert consultation.</div>
+                            <div class="plan-price">$19.99/month</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-continue" id="submitBtn">
+                <span class="loading" id="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+                Continue
+            </button>
+    </form>
+</div>
+
+    <script>
+        // Plan selection functionality
+        function selectPlan(planId) {
+            // Remove active class from all options
+            document.querySelectorAll('.plan-option label').forEach(label => {
+                label.style.borderColor = '#e2e8f0';
+                label.style.background = '#f7fafc';
+            });
+
+            // Add active class to selected option
+            const selectedLabel = document.querySelector(`#${planId} + label`);
+            selectedLabel.style.borderColor = '#48bb78';
+            selectedLabel.style.background = '#f0fff4';
+            selectedLabel.style.boxShadow = '0 4px 12px rgba(72, 187, 120, 0.15)';
+
+            // Check the radio button
+            document.getElementById(planId).checked = true;
+
+            // Enable submit button
+            document.getElementById('submitBtn').classList.add('active');
+        }
+
+        // Add click event listeners to all plan options
+        document.querySelectorAll('.plan-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const radioId = this.querySelector('input[type="radio"]').id;
+                selectPlan(radioId);
+            });
+        });
+
+        // Form submission
+        document.getElementById('planForm').addEventListener('submit', function(e) {
+            const loading = document.getElementById('loading');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            loading.classList.add('show');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading show"><i class="fas fa-spinner fa-spin"></i></span>Processing...';
+        });
+
+        // Progress bar animation
+        window.addEventListener('load', function() {
+            const progressFill = document.querySelector('.progress-fill');
+            progressFill.style.width = '0%';
+            setTimeout(() => {
+                progressFill.style.width = '96%';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
